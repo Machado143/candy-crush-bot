@@ -18,20 +18,23 @@ class ResultadoClassificacao:
 
 class ClassificadorCor:
     CATEGORIAS = (
-        CategoriaCor(nome="grupo_0", matiz=1.0,   saturacao=138.76, brilho=222.94),
-        CategoriaCor(nome="grupo_1", matiz=55.0,  saturacao=181.58, brilho=168.27),
-        CategoriaCor(nome="grupo_2", matiz=96.69, saturacao=140.45, brilho=197.46),
-        CategoriaCor(nome="grupo_3", matiz=107.0, saturacao=144.98, brilho=240.04),
-        CategoriaCor(nome="grupo_4", matiz=144.57, saturacao=164.89, brilho=240.48),
+        CategoriaCor(nome="vermelho", matiz=0.00, saturacao=254.12, brilho=180.49),
+        CategoriaCor(nome="amarelo", matiz=22.00, saturacao=248.96, brilho=209.61),
+        CategoriaCor(nome="verde", matiz=52.00, saturacao=243.06, brilho=142.46),
+        CategoriaCor(nome="azul", matiz=105.00, saturacao=231.05, brilho=195.11),
+        CategoriaCor(nome="roxo", matiz=142.00, saturacao=231.29, brilho=199.16),
+        CategoriaCor(nome="laranja", matiz=16.00, saturacao=240.60, brilho=201.45),
+        CategoriaCor(nome="maquina", matiz=96.00, saturacao=107.31, brilho=212.40),
     )
 
-    # 👇 AQUI VOCÊ PODE AJUSTAR SE AS CORES NÃO BATEM COM O JOGO
     MAPEAMENTO = {
-        "grupo_0": TipoPeca.ROXO,
-        "grupo_1": TipoPeca.VERMELHO,
-        "grupo_2": TipoPeca.AZUL,
-        "grupo_3": TipoPeca.VERDE,
-        "grupo_4": TipoPeca.LARANJA,
+        "vermelho": TipoPeca.VERMELHO,
+        "amarelo": TipoPeca.AMARELO,
+        "verde": TipoPeca.VERDE,
+        "azul": TipoPeca.AZUL,
+        "roxo": TipoPeca.ROXO,
+        "laranja": TipoPeca.LARANJA,
+        "maquina": TipoPeca.MAQUINA,
     }
 
     def classificar(self, matiz: float, saturacao: float, brilho: float) -> ResultadoClassificacao:

@@ -23,18 +23,32 @@ class Visao:
             brilho_minimo=50,
             area_minima=20
         )
+        # O fundo do tabuleiro aparece nos cantos/bordas de cada célula
+        # (o doce não preenche o quadrado inteiro) e é colorido/saturado
+        # o suficiente pra passar pelo SegmentadorDoce junto com o doce.
+        # Cortando essa margem, sobra só o centro (o doce de verdade).
+        self.margem_percentual = 0.22
+
+    def _recortar_centro(self, imagem: np.ndarray) -> np.ndarray:
+        altura, largura = imagem.shape[:2]
+        mh = int(altura * self.margem_percentual)
+        mw = int(largura * self.margem_percentual)
+        recorte = imagem[mh:altura - mh, mw:largura - mw]
+        if recorte.size == 0:
+            return imagem
+        return recorte
 
     def analisar(self, imagem: np.ndarray, linha: int, coluna: int) -> CaracteristicasCelula:
         if imagem is None or imagem.size == 0:
             raise ValueError("Imagem da célula inválida.")
 
-        # 1. Segmenta o doce para pegar só a cor real
-        resultado_seg = self.segmentador.segmentar(imagem)
+        imagem_central = self._recortar_centro(imagem)
+
+        resultado_seg = self.segmentador.segmentar(imagem_central)
         mascara = resultado_seg.mascara
 
-        hsv = cv2.cvtColor(imagem, cv2.COLOR_BGR2HSV)
+        hsv = cv2.cvtColor(imagem_central, cv2.COLOR_BGR2HSV)
 
-        # Se tiver doce, usamos apenas os pixels do doce para calcular a cor
         if resultado_seg.area_doce > 20:
             h = hsv[:, :, 0][mascara > 0]
             s = hsv[:, :, 1][mascara > 0]
@@ -48,11 +62,10 @@ class Visao:
         saturacao = float(np.mean(s))
         brilho = float(np.mean(v))
 
-        # Matiz dominante
         hist = np.bincount(h.astype(int), minlength=180)
         matiz_dominante = float(np.argmax(hist))
 
-        bgr_medio = np.mean(imagem, axis=(0, 1))
+        bgr_medio = np.mean(imagem_central, axis=(0, 1))
         return CaracteristicasCelula(
             linha=linha,
             coluna=coluna,

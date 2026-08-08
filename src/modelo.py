@@ -21,8 +21,8 @@ class TipoPeca(Enum):
     AZUL = "azul"
     ROXO = "roxo"
     LARANJA = "laranja"
+    MAQUINA = "maquina"  # dispensador de doces (elemento de fase, não é cor)
     VAZIO = "vazio"  # célula sem peça (ex: buraco temporário durante queda)
-
 
 class Especial(Enum):
     """Modificador especial de uma peça, se houver."""
@@ -58,7 +58,7 @@ class Peca:
     _ABREVIACOES = {
         TipoPeca.VERMELHO: "R", TipoPeca.AMARELO: "A", TipoPeca.VERDE: "V",
         TipoPeca.AZUL: "Z", TipoPeca.ROXO: "X", TipoPeca.LARANJA: "L",
-        TipoPeca.VAZIO: ".",
+        TipoPeca.MAQUINA: "M", TipoPeca.VAZIO: ".",
     }
 
     def __repr__(self) -> str:

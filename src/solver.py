@@ -166,9 +166,12 @@ def gerar_jogadas_possiveis(tabuleiro: Tabuleiro) -> List[Jogada]:
 
     for l in range(tabuleiro.num_linhas):
         for c in range(tabuleiro.num_colunas):
+            peca_atual = tabuleiro.obter(l, c)
+            if peca_atual is None or peca_atual.tipo == TipoPeca.MAQUINA:
+                continue
             for (l2, c2) in [(l, c + 1), (l + 1, c)]:  # direita e abaixo evita duplicar pares
                 vizinho = tabuleiro.obter(l2, c2)
-                if vizinho is None:
+                if vizinho is None or vizinho.tipo == TipoPeca.MAQUINA:
                     continue
                 chave = (l, c, l2, c2)
                 if chave in vistas:
