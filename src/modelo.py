@@ -10,7 +10,7 @@ Cada peça guarda duas noções de posição, que nunca devem ser confundidas:
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, List
+from typing import Optional, List, Iterable
 
 
 class TipoPeca(Enum):
@@ -114,6 +114,38 @@ class Tabuleiro:
                 )
                 novo._grade[l][c] = copia
         return novo
+
+    def remover(self, celulas: Iterable[tuple[int, int]]) -> None:
+        for l, c in celulas:
+            self._grade[l][c] = Peca(TipoPeca.VAZIO, l, c)
+
+    def aplicar_gravidade(self) -> None:
+        for c in range(self.num_colunas):
+            pilha = [
+                self._grade[l][c]
+                for l in range(self.num_linhas)
+                if self._grade[l][c].tipo != TipoPeca.VAZIO
+            ]
+
+            num_vazios = self.num_linhas - len(pilha)
+            for l in range(num_vazios):
+                self._grade[l][c] = Peca(TipoPeca.VAZIO, l, c)
+
+            for i, peca in enumerate(pilha):
+                l_destino = num_vazios + i
+                peca.linha, peca.coluna = l_destino, c
+                self._grade[l_destino][c] = peca
+
+    def preencher_vazios(self, gerador_aleatorio=None) -> None:
+        import random
+
+        rnd = gerador_aleatorio or random
+        cores = [t for t in TipoPeca if t != TipoPeca.VAZIO]
+
+        for l in range(self.num_linhas):
+            for c in range(self.num_colunas):
+                if self._grade[l][c].tipo == TipoPeca.VAZIO:
+                    self._grade[l][c] = Peca(rnd.choice(cores), l, c)
 
     def __repr__(self) -> str:
         linhas = []

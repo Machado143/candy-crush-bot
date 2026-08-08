@@ -18,6 +18,10 @@ para executá-la.
   pontua cada uma (match 3 / 4 listrado / L-T embrulhado / 5 bomba de cor /
   combo de especiais) e escolhe a melhor. Sem lookahead.
 
+- **Fase 2.1 — Cascata completa** ✅
+  Após a troca, o solver simula remoção, gravidade, reenchimento e novas
+  cascatas até o tabuleiro estabilizar.
+
 - **Fase 3 — Leitura da tela**
   Captura de tela (`mss`) + template matching (`opencv`) para reconstruir
   o `Tabuleiro` real a partir da tela do jogo, incluindo coordenadas de

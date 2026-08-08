@@ -1,6 +1,9 @@
-import sys, os
+import os
+import random
+import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
+import solver
 from modelo import Peca, Tabuleiro, TipoPeca
 from solver import gerar_jogadas_possiveis, melhor_jogada
 
@@ -81,6 +84,32 @@ def teste_tabuleiro_sem_jogadas():
     print(t)
     print(f"{len(jogadas)} jogada(s) válida(s) (esperado: 0)")
     assert len(jogadas) == 0
+
+
+def teste_cascata_completa_na_avaliacao(monkeypatch):
+    t = tabuleiro_de_texto([
+        "RAR",
+        "VRV",
+        "AVA",
+    ])
+
+    escolhas = iter([
+        TipoPeca.AMARELO,
+        TipoPeca.AMARELO,
+        TipoPeca.AMARELO,
+        TipoPeca.VERDE,
+        TipoPeca.AZUL,
+        TipoPeca.ROXO,
+    ])
+
+    def escolha_controlada(_cores):
+        return next(escolhas)
+
+    monkeypatch.setattr(random, "choice", escolha_controlada)
+
+    pontuacao = solver.avaliar_jogada(t, 0, 1, 1, 1)
+
+    assert pontuacao >= 20
 
 
 if __name__ == "__main__":

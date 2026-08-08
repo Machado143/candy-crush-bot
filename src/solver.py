@@ -125,12 +125,35 @@ def _pontuar_grupos(grupos: List[Set[Tuple[int, int]]]) -> float:
     return total
 
 
-def avaliar_jogada(tabuleiro: Tabuleiro, l1: int, c1: int, l2: int, c2: int) -> float:
-    """Simula uma troca e retorna a pontuação resultante (0 se não gera match)."""
+def avaliar_jogada(
+    tabuleiro: Tabuleiro,
+    l1: int,
+    c1: int,
+    l2: int,
+    c2: int,
+    max_cascatas: int = 20,
+    gerador_aleatorio=None,
+) -> float:
     copia = tabuleiro.copiar_estado()
     copia.trocar(l1, c1, l2, c2)
-    grupos = _encontrar_linhas_de_match(copia)
-    return _pontuar_grupos(grupos)
+
+    total = 0.0
+    for _ in range(max_cascatas):
+        grupos = _encontrar_linhas_de_match(copia)
+        if not grupos:
+            break
+
+        total += _pontuar_grupos(grupos)
+
+        celulas_para_remover = set()
+        for grupo in grupos:
+            celulas_para_remover |= grupo
+
+        copia.remover(celulas_para_remover)
+        copia.aplicar_gravidade()
+        copia.preencher_vazios(gerador_aleatorio)
+
+    return total
 
 
 def gerar_jogadas_possiveis(tabuleiro: Tabuleiro) -> List[Jogada]:
